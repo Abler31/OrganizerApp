@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.my.org.presentation.LoginFragment"
+        android:name="com.my.org.presentation.SplashFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" >
+        tools:layout="@layout/fragment_splash" >
         <action
             android:id="@+id/action_loginFragment_to_mainFragment"
             app:destination="@id/mainFragment" />

@@ -9,4 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="splash">#BDEFFF</color>
     <color name="powered">#42B6CD</color>
+    <color name="blue_light">#D2E3FC</color>
+    <color name="grey">#989898</color>
 </resources>

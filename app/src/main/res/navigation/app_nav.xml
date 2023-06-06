@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_nav"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/mainFragment">
 
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.my.org.presentation.SplashFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_splash" >
+        tools:layout="@layout/fragment_splash">
         <action
             android:id="@+id/action_loginFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
@@ -18,6 +18,5 @@
         android:id="@+id/mainFragment"
         android:name="com.my.org.presentation.MainFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_main" >
-    </fragment>
+        tools:layout="@layout/fragment_main"></fragment>
 </navigation>

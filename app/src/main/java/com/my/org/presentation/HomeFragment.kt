@@ -1,7 +1,6 @@
 package com.my.org.presentation
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +9,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.children
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.kizitonwose.calendar.core.CalendarDay
@@ -24,22 +24,53 @@ import com.my.org.R
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         calendarView = view.findViewById(R.id.calendarView)
-        val daysOfWeek = daysOfWeek()
+        val daysOfWeek = daysOfWeek(firstDayOfWeek = DayOfWeek.MONDAY)
         val currentMonth = YearMonth.now()
         val startMonth = currentMonth.minusMonths(50)
         val endMonth = currentMonth.plusMonths(50)
         configureBinders(daysOfWeek)
         val calendarView = view.findViewById<CalendarView>(R.id.calendarView)
         val addButton = view.findViewById<FloatingActionButton>(R.id.btn_addTask)
+        val monthText = view.findViewById<TextView>(R.id.tv_calendar_header_month)
+
         calendarView.apply {
             setup(startMonth, endMonth, daysOfWeek.first())
             scrollToMonth(currentMonth)
+        }
+        val months = arrayOf(
+            "Январь",
+            "Февраль",
+            "Март",
+            "Апрель",
+            "Май",
+            "Июнь",
+            "Июль",
+            "Август",
+            "Сентябрь",
+            "Октябрь",
+            "Ноябрь",
+            "Декабрь"
+        )
+
+        calendarView.monthScrollListener = {
+            val cal = Calendar.getInstance()
+            val calDate = Date.from(it.yearMonth.atDay(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+            cal.setTime(calDate)
+            monthText.text = months[cal.get(Calendar.MONTH)]
+
+
+            selectDate(it.yearMonth.atDay(1))
         }
 
         if (savedInstanceState == null) {
@@ -56,7 +87,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val today = LocalDate.now()
 
     private val titleSameYearFormatter = DateTimeFormatter.ofPattern("MMMM")
-    private val titleFormatter = DateTimeFormatter.ofPattern("MMM yyyy")
+    private val headerFormatter = DateTimeFormatter.ofPattern("MMM d")
     private val selectionFormatter = DateTimeFormatter.ofPattern("d MMM yyyy")
     private val events = mutableMapOf<LocalDate, List<Event>>()
     private lateinit var calendarView : CalendarView
@@ -94,7 +125,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                         }
                         selectedDate -> {
                             textView.setTextColorRes(R.color.white)
-                            textView.setBackgroundResource(R.drawable.calendar_today_bg)
+                            textView.setBackgroundResource(R.drawable.calendar_selected_bg)
                             dotView.makeInVisible()
                         }
                         else -> {
@@ -122,8 +153,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                         container.legendLayout.tag = data.yearMonth
                         container.legendLayout.children.map { it as TextView }
                             .forEachIndexed { index, tv ->
-                                tv.text = daysOfWeek[index].name.first().toString()
-                                tv.setTextColorRes(R.color.black)
+                                tv.text = daysOfWeek[index].getDisplayName(TextStyle.SHORT, Locale.getDefault()).replaceFirstChar { it.uppercaseChar() }
                             }
                     }
                 }
@@ -144,8 +174,18 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             events.addAll(this@HomeFragment.events[date].orEmpty())
             notifyDataSetChanged()
         }
+
         val selectedText = requireView().findViewById<TextView>(R.id.tv_selectedDate)
         selectedText.text = selectionFormatter.format(date)
+
+        val dayOfWeekHeader = requireView().findViewById<TextView>(R.id.tv_calendar_day_of_week_top)
+        dayOfWeekHeader.text = date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()).replaceFirstChar { it.uppercaseChar() }
+
+        val dateHeader = requireView().findViewById<TextView>(R.id.tv_calendar_date_top)
+        dateHeader.text = headerFormatter.format(date)
+
+        val yearHeader = requireView().findViewById<TextView>(R.id.tv_calendar_year_top)
+        yearHeader.text = date.year.toString()
     }
     private val eventsAdapter = EventsAdapter {
         AlertDialog.Builder(requireContext())

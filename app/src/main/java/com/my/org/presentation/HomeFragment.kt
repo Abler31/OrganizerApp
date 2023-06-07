@@ -179,7 +179,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         selectedText.text = selectionFormatter.format(date)
 
         val dayOfWeekHeader = requireView().findViewById<TextView>(R.id.tv_calendar_day_of_week_top)
-        dayOfWeekHeader.text = date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()).replaceFirstChar { it.uppercaseChar() }
+        dayOfWeekHeader.text = date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()).replaceFirstChar { it.uppercaseChar() } + ","
 
         val dateHeader = requireView().findViewById<TextView>(R.id.tv_calendar_date_top)
         dateHeader.text = headerFormatter.format(date)

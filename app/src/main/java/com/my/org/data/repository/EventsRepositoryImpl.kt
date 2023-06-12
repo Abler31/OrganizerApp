@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.my.org.domain.models.Event
 import com.my.org.data.data_source.EventsDao
 import com.my.org.domain.repository.EventRepository
+import java.time.LocalDate
 
 class EventsRepositoryImpl(private val eventsDao: EventsDao) : EventRepository {
     override suspend fun insert(event: Event) {
@@ -20,6 +21,10 @@ class EventsRepositoryImpl(private val eventsDao: EventsDao) : EventRepository {
 
     override fun getAllEvents(): LiveData<List<Event>> {
         return eventsDao.getAllEvents()
+    }
+
+    override suspend fun getEventsByDate(date: LocalDate): List<Event> {
+        return eventsDao.getEventsByDate(date)
     }
 
 

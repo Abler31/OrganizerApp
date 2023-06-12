@@ -7,6 +7,7 @@ import com.my.org.data.data_source.EventsDatabase
 import com.my.org.data.repository.EventsRepositoryImpl
 import com.my.org.domain.usecase.DeleteEventUseCase
 import com.my.org.domain.usecase.GetAllEventsUseCase
+import com.my.org.domain.usecase.GetEventsByDateUseCase
 import com.my.org.domain.usecase.InsertEventUseCase
 import com.my.org.domain.usecase.UpdateEventUseCase
 
@@ -16,12 +17,14 @@ class EventsViewModelFactory(context: Context): ViewModelProvider.Factory {
     val insertEventUseCase by lazy { InsertEventUseCase(repository) }
     val updateEventUseCase by lazy { UpdateEventUseCase(repository) }
     val deleteEventUseCase by lazy { DeleteEventUseCase(repository) }
+    val getEventsByDateUseCase by lazy { GetEventsByDateUseCase(repository) }
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return EventsViewModel(
             getAllEventsUseCase = getAllEventsUseCase,
             insertEventUseCase = insertEventUseCase,
             updateEventUseCase = updateEventUseCase,
-            deleteEventUseCase = deleteEventUseCase
+            deleteEventUseCase = deleteEventUseCase,
+            getEventsByDateUseCase = getEventsByDateUseCase
         ) as T
     }
 }

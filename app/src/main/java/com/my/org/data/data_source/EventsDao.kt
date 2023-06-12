@@ -7,6 +7,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.my.org.domain.models.Event
+import java.time.LocalDate
 
 @Dao
 interface EventsDao {
@@ -21,4 +22,7 @@ interface EventsDao {
 
     @Query("Select * from eventsTable order by id ASC")
     fun getAllEvents(): LiveData<List<Event>>
+
+    @Query("Select * from eventsTable where date = :date")
+    suspend fun getEventsByDate(date: LocalDate): List<Event>
 }

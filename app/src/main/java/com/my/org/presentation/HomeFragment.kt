@@ -1,9 +1,9 @@
 package com.my.org.presentation
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -86,9 +86,16 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         eventsRV.layoutManager = LinearLayoutManager(requireContext())
         eventsRV.adapter = eventsAdapter
 
-        viewModel.eventsLiveData.observe(viewLifecycleOwner) {
+        /*viewModel.eventsLiveData.observe(viewLifecycleOwner) {
+            eventsAdapter.updateList(it)
+        }*/
+
+        viewModel.eventsByDate.observe(viewLifecycleOwner){
+            viewModel.getEventsByDate(selectedDate!!)
             eventsAdapter.updateList(it)
         }
+
+
 
         addButton.setOnClickListener{
             inputDialog.show()
@@ -139,7 +146,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val titleSameYearFormatter = DateTimeFormatter.ofPattern("MMMM")
     private val headerFormatter = DateTimeFormatter.ofPattern("MMM d")
     private val selectionFormatter = DateTimeFormatter.ofPattern("d MMM yyyy")
-    private val events = mutableMapOf<LocalDate, List<Event>>()
+    private val eventsMap = mutableMapOf<LocalDate, List<Event>>()
     private lateinit var calendarView : CalendarView
 
     private fun configureBinders(daysOfWeek: List<DayOfWeek>) {
@@ -181,7 +188,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                         else -> {
                             textView.setTextColorRes(R.color.black)
                             textView.background = null
-                            dotView.isVisible = events[data.date].orEmpty().isNotEmpty()
+                            dotView.isVisible = eventsMap[data.date].orEmpty().isNotEmpty()
                         }
                     }
                 } else {
@@ -215,29 +222,28 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             selectedDate = date
             oldDate?.let { calendarView.notifyDateChanged(it) }
             calendarView.notifyDateChanged(date)
-            updateAdapterForDate(date)
+
+            updateAdapterForDate()
+
+            val selectedText = requireView().findViewById<TextView>(R.id.tv_selectedDate)
+            selectedText.text = selectionFormatter.format(date)
+
+            val dayOfWeekHeader = requireView().findViewById<TextView>(R.id.tv_calendar_day_of_week_top)
+            dayOfWeekHeader.text = date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()).replaceFirstChar { it.uppercaseChar() } + ","
+
+            val dateHeader = requireView().findViewById<TextView>(R.id.tv_calendar_date_top)
+            dateHeader.text = headerFormatter.format(date)
+
+            val yearHeader = requireView().findViewById<TextView>(R.id.tv_calendar_year_top)
+            yearHeader.text = date.year.toString()
         }
     }
-    private fun updateAdapterForDate(date: LocalDate) {
-        eventsAdapter.apply {
-            events.clear()
-            events.addAll(this@HomeFragment.events[date].orEmpty())
-            notifyDataSetChanged()
-        }
-
-        val selectedText = requireView().findViewById<TextView>(R.id.tv_selectedDate)
-        selectedText.text = selectionFormatter.format(date)
-
-        val dayOfWeekHeader = requireView().findViewById<TextView>(R.id.tv_calendar_day_of_week_top)
-        dayOfWeekHeader.text = date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()).replaceFirstChar { it.uppercaseChar() } + ","
-
-        val dateHeader = requireView().findViewById<TextView>(R.id.tv_calendar_date_top)
-        dateHeader.text = headerFormatter.format(date)
-
-        val yearHeader = requireView().findViewById<TextView>(R.id.tv_calendar_year_top)
-        yearHeader.text = date.year.toString()
+    private fun updateAdapterForDate() {
+        viewModel.getEventsByDate(selectedDate!!)
+        eventsAdapter.updateList(viewModel.eventsByDate.value.orEmpty())
     }
     private val eventsAdapter = EventsAdapter {
+        Log.d("test", "Надатие произошло")
         AlertDialog.Builder(requireContext())
             .setMessage("Delete this event?")
             .setPositiveButton("Delete") { _, _ ->

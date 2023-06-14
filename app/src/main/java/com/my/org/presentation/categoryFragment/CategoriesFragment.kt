@@ -10,12 +10,14 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.my.org.R
 import com.my.org.domain.models.Category
 import com.my.org.domain.models.Event
+import com.my.org.presentation.homeFragment.HomeFragment
 import com.my.org.presentation.inputMethodManager
 import java.util.Locale
 
@@ -25,7 +27,8 @@ class CategoriesFragment : Fragment(R.layout.fragment_categories) {
     lateinit var categoriesRV: RecyclerView
 
     private val categoriesAdapter = CategoriesAdapter{
-
+        val direction = CategoriesFragmentDirections.actionCategoriesFragmentToDetailedCategoryFragment(it.name)
+        findNavController().navigate(direction)
     }
 
     private val inputDialog by lazy{

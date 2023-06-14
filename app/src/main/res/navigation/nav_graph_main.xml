@@ -21,7 +21,7 @@
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/detailedCategoryFragment"
-        android:name="com.my.org.presentation.DetailedCategoryFragment"
+        android:name="com.my.org.presentation.detailedCategories.DetailedCategoryFragment"
         android:label="fragment_detailed_category"
         tools:layout="@layout/fragment_detailed_category" >
         <argument

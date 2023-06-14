@@ -15,4 +15,6 @@ interface EventRepository {
     fun getAllEvents(): LiveData<List<Event>>
 
     suspend fun getEventsByDate(date: LocalDate): List<Event>
+
+    suspend fun getEventsByCategory(category: String): List<Event>
 }

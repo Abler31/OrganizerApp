@@ -27,5 +27,9 @@ class EventsRepositoryImpl(private val appDao: AppDao) : EventRepository {
         return appDao.getEventsByDate(date)
     }
 
+    override suspend fun getEventsByCategory(category: String): List<Event> {
+        return appDao.getEventsByCategory(category)
+    }
+
 
 }

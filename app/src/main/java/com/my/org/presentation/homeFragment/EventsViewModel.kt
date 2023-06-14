@@ -1,25 +1,26 @@
-package com.my.org.presentation
+package com.my.org.presentation.homeFragment
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.my.org.domain.models.Event
-import com.my.org.domain.usecase.DeleteEventUseCase
-import com.my.org.domain.usecase.GetAllEventsUseCase
-import com.my.org.domain.usecase.GetEventsByDateUseCase
-import com.my.org.domain.usecase.InsertEventUseCase
-import com.my.org.domain.usecase.UpdateEventUseCase
+import com.my.org.domain.usecase.eventUseCases.DeleteEventUseCase
+import com.my.org.domain.usecase.eventUseCases.GetAllEventsUseCase
+import com.my.org.domain.usecase.eventUseCases.GetEventsByDateUseCase
+import com.my.org.domain.usecase.eventUseCases.InsertEventUseCase
+import com.my.org.domain.usecase.eventUseCases.UpdateEventUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-class EventsViewModel(private val getAllEventsUseCase: GetAllEventsUseCase,
-private val insertEventUseCase: InsertEventUseCase,
-private val updateEventUseCase: UpdateEventUseCase,
-private val deleteEventUseCase: DeleteEventUseCase,
-private val getEventsByDateUseCase: GetEventsByDateUseCase
-): ViewModel() {
+class EventsViewModel(
+    private val getAllEventsUseCase: GetAllEventsUseCase,
+    private val insertEventUseCase: InsertEventUseCase,
+    private val updateEventUseCase: UpdateEventUseCase,
+    private val deleteEventUseCase: DeleteEventUseCase,
+    private val getEventsByDateUseCase: GetEventsByDateUseCase
+) : ViewModel() {
 
 
     val eventsLiveData: LiveData<List<Event>> = getAllEventsUseCase.execute()

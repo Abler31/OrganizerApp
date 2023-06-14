@@ -6,23 +6,36 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import com.my.org.domain.models.Category
 import com.my.org.domain.models.Event
 import java.time.LocalDate
 
 @Dao
-interface EventsDao {
+interface AppDao {
     @Insert
-    suspend fun insert(event: Event)
+    suspend fun insertEvent(event: Event)
 
     @Update
-    suspend fun update(event: Event)
+    suspend fun updateEvent(event: Event)
 
     @Delete
-    suspend fun delete(event: Event)
+    suspend fun deleteEvent(event: Event)
 
     @Query("Select * from eventsTable order by id ASC")
     fun getAllEvents(): LiveData<List<Event>>
 
     @Query("Select * from eventsTable where date = :date")
     suspend fun getEventsByDate(date: LocalDate): List<Event>
+
+    @Insert
+    suspend fun insertCategory(category: Category)
+
+    @Update
+    suspend fun updateCategory(category: Category)
+
+    @Delete
+    suspend fun deleteCategory(category: Category)
+
+    @Query("Select * from categoriesTable order by id ASC")
+    fun getAllCategories(): LiveData<List<Category>>
 }

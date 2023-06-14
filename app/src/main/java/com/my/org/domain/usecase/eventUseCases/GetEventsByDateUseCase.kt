@@ -1,4 +1,4 @@
-package com.my.org.domain.usecase
+package com.my.org.domain.usecase.eventUseCases
 
 import androidx.lifecycle.LiveData
 import com.my.org.domain.models.Event

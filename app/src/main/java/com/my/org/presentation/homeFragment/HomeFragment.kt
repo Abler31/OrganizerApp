@@ -1,21 +1,16 @@
-package com.my.org.presentation
+package com.my.org.presentation.homeFragment
 
 import android.app.TimePickerDialog
 import android.os.Bundle
-import android.text.Layout
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.TimePicker
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -33,6 +28,10 @@ import com.kizitonwose.calendar.view.MonthHeaderFooterBinder
 import com.kizitonwose.calendar.view.ViewContainer
 import com.my.org.R
 import com.my.org.domain.models.Event
+import com.my.org.presentation.inputMethodManager
+import com.my.org.presentation.makeInVisible
+import com.my.org.presentation.makeVisible
+import com.my.org.presentation.setTextColorRes
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -79,11 +78,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             .setTitle("Создание задачи")
             .setView(view)
             .setPositiveButton("Сохранить") { _, _ ->
-                /*saveEvent(editText.text.toString())
+                //saveEvent(editText.text.toString())
                 // Prepare EditText for reuse.
-                editText.setText("")*/
+
                 selectedDate?.let { Event(text = name.text.toString(), time = String.format(Locale.getDefault(), "%02d:%02d",hour, minute), description = description.text.toString(), date = it) }
                     ?.let { viewModel.insertEvent(it) }
+                name.setText("")
+                description.setText("")
             }
             .setNegativeButton("Закрыть", null)
             .create()

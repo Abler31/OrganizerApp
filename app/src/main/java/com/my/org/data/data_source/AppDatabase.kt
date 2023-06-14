@@ -6,22 +6,23 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.my.org.data.Converters
+import com.my.org.domain.models.Category
 import com.my.org.domain.models.Event
 
-@Database(entities = arrayOf(Event::class), version = 1, exportSchema = false)
+@Database(entities = arrayOf(Event::class, Category::class), version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
-abstract class EventsDatabase: RoomDatabase() {
-    abstract  fun getEventsDao(): EventsDao
+abstract class AppDatabase: RoomDatabase() {
+    abstract  fun getAppDao(): AppDao
 
     companion object{
         @Volatile
-        private var INSTANCE: EventsDatabase? = null
+        private var INSTANCE: AppDatabase? = null
 
-        fun getDatabase(context: Context): EventsDatabase {
+        fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this){
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    EventsDatabase::class.java,
+                    AppDatabase::class.java,
                     "event_database"
                 ).build()
                 INSTANCE = instance

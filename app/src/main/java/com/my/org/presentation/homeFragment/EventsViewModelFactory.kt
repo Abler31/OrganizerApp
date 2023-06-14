@@ -1,18 +1,18 @@
-package com.my.org.presentation
+package com.my.org.presentation.homeFragment
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.my.org.data.data_source.EventsDatabase
+import com.my.org.data.data_source.AppDatabase
 import com.my.org.data.repository.EventsRepositoryImpl
-import com.my.org.domain.usecase.DeleteEventUseCase
-import com.my.org.domain.usecase.GetAllEventsUseCase
-import com.my.org.domain.usecase.GetEventsByDateUseCase
-import com.my.org.domain.usecase.InsertEventUseCase
-import com.my.org.domain.usecase.UpdateEventUseCase
+import com.my.org.domain.usecase.eventUseCases.DeleteEventUseCase
+import com.my.org.domain.usecase.eventUseCases.GetAllEventsUseCase
+import com.my.org.domain.usecase.eventUseCases.GetEventsByDateUseCase
+import com.my.org.domain.usecase.eventUseCases.InsertEventUseCase
+import com.my.org.domain.usecase.eventUseCases.UpdateEventUseCase
 
 class EventsViewModelFactory(context: Context): ViewModelProvider.Factory {
-    val repository by lazy { EventsRepositoryImpl(EventsDatabase.getDatabase(context = context).getEventsDao()) }
+    val repository by lazy { EventsRepositoryImpl(AppDatabase.getDatabase(context = context).getAppDao()) }
     val getAllEventsUseCase by lazy { GetAllEventsUseCase(repository) }
     val insertEventUseCase by lazy { InsertEventUseCase(repository) }
     val updateEventUseCase by lazy { UpdateEventUseCase(repository) }

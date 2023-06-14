@@ -1,12 +1,12 @@
-package com.my.org.domain.usecase
+package com.my.org.domain.usecase.eventUseCases
 
 import com.my.org.domain.models.Event
 import com.my.org.domain.repository.EventRepository
 
-class InsertEventUseCase(
+class DeleteEventUseCase(
     private val repository: EventRepository
 ) {
     suspend fun execute(event: Event){
-        repository.insert(event)
+        repository.delete(event)
     }
 }

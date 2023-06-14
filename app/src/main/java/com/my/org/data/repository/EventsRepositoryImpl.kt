@@ -2,29 +2,29 @@ package com.my.org.data.repository
 
 import androidx.lifecycle.LiveData
 import com.my.org.domain.models.Event
-import com.my.org.data.data_source.EventsDao
+import com.my.org.data.data_source.AppDao
 import com.my.org.domain.repository.EventRepository
 import java.time.LocalDate
 
-class EventsRepositoryImpl(private val eventsDao: EventsDao) : EventRepository {
+class EventsRepositoryImpl(private val appDao: AppDao) : EventRepository {
     override suspend fun insert(event: Event) {
-        eventsDao.insert(event)
+        appDao.insertEvent(event)
     }
 
     override suspend fun update(event: Event) {
-        eventsDao.update(event)
+        appDao.updateEvent(event)
     }
 
     override suspend fun delete(event: Event) {
-        eventsDao.delete(event)
+        appDao.deleteEvent(event)
     }
 
     override fun getAllEvents(): LiveData<List<Event>> {
-        return eventsDao.getAllEvents()
+        return appDao.getAllEvents()
     }
 
     override suspend fun getEventsByDate(date: LocalDate): List<Event> {
-        return eventsDao.getEventsByDate(date)
+        return appDao.getEventsByDate(date)
     }
 
 

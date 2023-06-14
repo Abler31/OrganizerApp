@@ -1,4 +1,4 @@
-package com.my.org.presentation
+package com.my.org.presentation.homeFragment
 
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +15,7 @@ class EventsAdapter(val onClick: (Event) -> Unit) :
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): EventsAdapter.EventsViewHolder {
+    ): EventsViewHolder {
         val itemView =
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.event_item_view, parent, false)

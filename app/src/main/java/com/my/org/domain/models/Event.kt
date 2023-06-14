@@ -8,6 +8,8 @@ import java.time.LocalDate
 
 @Entity(tableName = "eventsTable")
 data class Event(val text: String,
+                 val description: String,
+                 val time: String,
                  val date: LocalDate){
     @PrimaryKey(autoGenerate = true) var id = 0
 }

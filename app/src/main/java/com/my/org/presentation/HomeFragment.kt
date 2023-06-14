@@ -1,12 +1,19 @@
 package com.my.org.presentation
 
+import android.app.TimePickerDialog
 import android.os.Bundle
+import android.text.Layout
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.Button
+import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.TimePicker
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.children
@@ -44,30 +51,55 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
 
     private val inputDialog by lazy {
-        val editText = AppCompatEditText(requireContext())
-        val layout = FrameLayout(requireContext()).apply {
-            // Setting the padding on the EditText only pads the input area
-            // not the entire EditText so we wrap it in a FrameLayout.
-            val padding = dpToPx(20, requireContext())
-            setPadding(padding, padding, padding, padding)
-            addView(editText, FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            ))
+        val view = LayoutInflater.from(requireContext()).inflate(R.layout.add_and_edit_event_dialog, null)
+        val name = view.findViewById<EditText>(R.id.et_dialog_name)
+        val description = view.findViewById<TextView>(R.id.et_dialog_description)
+
+        val timeButton = view.findViewById<Button>(R.id.btn_dialog_timepicker)
+
+        var hour = 0
+        var minute = 0
+
+
+        timeButton.setOnClickListener{
+            val onTimeSetListener = TimePickerDialog.OnTimeSetListener { timePicker, selectedHour, selectedMinute ->
+                hour = selectedHour
+                minute = selectedMinute
+                timeButton.setText(String.format(Locale.getDefault(), "%02d:%02d",hour, minute))
+            }
+            val style = android.app.AlertDialog.THEME_HOLO_DARK
+
+            val timePickerDialog = TimePickerDialog(requireContext(), style, onTimeSetListener, hour, minute, true)
+            timePickerDialog.setTitle("Выберите время")
+            timePickerDialog.show()
         }
+
+
         AlertDialog.Builder(requireContext())
-            .setTitle("Ввод")
-            .setView(layout)
-            .setPositiveButton("Save") { _, _ ->
-
-                selectedDate?.let { Event(editText.text.toString(), it) }
-                    ?.let { viewModel.insertEvent(it) }
-
+            .setTitle("Создание задачи")
+            .setView(view)
+            .setPositiveButton("Сохранить") { _, _ ->
+                /*saveEvent(editText.text.toString())
                 // Prepare EditText for reuse.
-                editText.setText("")
+                editText.setText("")*/
+                selectedDate?.let { Event(text = name.text.toString(), time = String.format(Locale.getDefault(), "%02d:%02d",hour, minute), description = description.text.toString(), date = it) }
+                    ?.let { viewModel.insertEvent(it) }
             }
             .setNegativeButton("Закрыть", null)
             .create()
+            .apply {
+                setOnShowListener {
+                    // Show the keyboard
+                    name.requestFocus()
+                    context.inputMethodManager
+                        .toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+                }
+                setOnDismissListener {
+                    // Hide the keyboard
+                    context.inputMethodManager
+                        .toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+                }
+            }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -91,7 +123,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }*/
 
         viewModel.eventsByDate.observe(viewLifecycleOwner){
-            viewModel.getEventsByDate(selectedDate!!)
+            //viewModel.getEventsByDate(selectedDate!!)
             eventsAdapter.updateList(it)
         }
 

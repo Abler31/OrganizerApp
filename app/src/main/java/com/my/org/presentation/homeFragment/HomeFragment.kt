@@ -6,9 +6,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.children
@@ -28,6 +30,8 @@ import com.kizitonwose.calendar.view.MonthHeaderFooterBinder
 import com.kizitonwose.calendar.view.ViewContainer
 import com.my.org.R
 import com.my.org.domain.models.Event
+import com.my.org.presentation.categoryFragment.CategoriesViewModel
+import com.my.org.presentation.categoryFragment.CategoriesViewModelFactory
 import com.my.org.presentation.inputMethodManager
 import com.my.org.presentation.makeInVisible
 import com.my.org.presentation.makeVisible
@@ -45,62 +49,16 @@ import java.util.Locale
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private val viewModel: EventsViewModel by viewModels { EventsViewModelFactory(requireContext()) }
+    private val categoriesViewModel: CategoriesViewModel by viewModels { CategoriesViewModelFactory(requireContext()) }
 
     lateinit var eventsRV: RecyclerView
+    var categories: List<String> = emptyList()
+
+    lateinit var spinnerArrayAdapter: ArrayAdapter<String>
 
 
     private val inputDialog by lazy {
-        val view = LayoutInflater.from(requireContext()).inflate(R.layout.add_and_edit_event_dialog, null)
-        val name = view.findViewById<EditText>(R.id.et_dialog_name)
-        val description = view.findViewById<TextView>(R.id.et_dialog_description)
 
-        val timeButton = view.findViewById<Button>(R.id.btn_dialog_timepicker)
-
-        var hour = 0
-        var minute = 0
-
-
-        timeButton.setOnClickListener{
-            val onTimeSetListener = TimePickerDialog.OnTimeSetListener { timePicker, selectedHour, selectedMinute ->
-                hour = selectedHour
-                minute = selectedMinute
-                timeButton.setText(String.format(Locale.getDefault(), "%02d:%02d",hour, minute))
-            }
-            val style = android.app.AlertDialog.THEME_HOLO_DARK
-
-            val timePickerDialog = TimePickerDialog(requireContext(), style, onTimeSetListener, hour, minute, true)
-            timePickerDialog.setTitle("Выберите время")
-            timePickerDialog.show()
-        }
-
-
-        AlertDialog.Builder(requireContext())
-            .setTitle("Создание задачи")
-            .setView(view)
-            .setPositiveButton("Сохранить") { _, _ ->
-                //saveEvent(editText.text.toString())
-                // Prepare EditText for reuse.
-
-                selectedDate?.let { Event(text = name.text.toString(), time = String.format(Locale.getDefault(), "%02d:%02d",hour, minute), description = description.text.toString(), date = it) }
-                    ?.let { viewModel.insertEvent(it) }
-                name.setText("")
-                description.setText("")
-            }
-            .setNegativeButton("Закрыть", null)
-            .create()
-            .apply {
-                setOnShowListener {
-                    // Show the keyboard
-                    name.requestFocus()
-                    context.inputMethodManager
-                        .toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
-                }
-                setOnDismissListener {
-                    // Hide the keyboard
-                    context.inputMethodManager
-                        .toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
-                }
-            }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -115,6 +73,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         val addButton = view.findViewById<FloatingActionButton>(R.id.btn_addTask)
         val monthText = view.findViewById<TextView>(R.id.tv_calendar_header_month)
 
+
         eventsRV = view.findViewById(R.id.rv_tasks)
         eventsRV.layoutManager = LinearLayoutManager(requireContext())
         eventsRV.adapter = eventsAdapter
@@ -128,10 +87,70 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             eventsAdapter.updateList(it)
         }
 
-
-
+        //создание категорий
+        spinnerArrayAdapter = ArrayAdapter<String>(requireContext(), androidx.transition.R.layout.support_simple_spinner_dropdown_item, categories)
+        categoriesViewModel.categoriesLiveData.observe(viewLifecycleOwner){
+            categories = it.map { category ->
+                category.name
+            }
+            spinnerArrayAdapter.notifyDataSetChanged()
+        }
         addButton.setOnClickListener{
-            inputDialog.show()
+            val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.add_and_edit_event_dialog, null)
+            val name = dialogView.findViewById<EditText>(R.id.et_dialog_name)
+            val description = dialogView.findViewById<TextView>(R.id.et_dialog_description)
+            val spinner = dialogView.findViewById<Spinner>(R.id.spinnerEvent)
+            spinnerArrayAdapter = ArrayAdapter<String>(requireContext(), androidx.transition.R.layout.support_simple_spinner_dropdown_item, categories)
+            spinner.adapter = spinnerArrayAdapter
+
+
+            val timeButton = dialogView.findViewById<Button>(R.id.btn_dialog_timepicker)
+            var hour = 0
+            var minute = 0
+
+
+            timeButton.setOnClickListener{
+                val onTimeSetListener = TimePickerDialog.OnTimeSetListener { timePicker, selectedHour, selectedMinute ->
+                    hour = selectedHour
+                    minute = selectedMinute
+                    timeButton.setText(String.format(Locale.getDefault(), "%02d:%02d",hour, minute))
+                }
+                val style = android.app.AlertDialog.THEME_HOLO_DARK
+
+                val timePickerDialog = TimePickerDialog(requireContext(), style, onTimeSetListener, hour, minute, true)
+                timePickerDialog.setTitle("Выберите время")
+                timePickerDialog.show()
+            }
+
+
+            AlertDialog.Builder(requireContext())
+                .setTitle("Создание задачи")
+                .setView(dialogView)
+                .setPositiveButton("Сохранить") { _, _ ->
+                    //saveEvent(editText.text.toString())
+                    // Prepare EditText for reuse.
+
+                    selectedDate?.let { Event(text = name.text.toString(), time = String.format(Locale.getDefault(), "%02d:%02d",hour, minute), description = description.text.toString(), date = it) }
+                        ?.let { viewModel.insertEvent(it) }
+                    name.setText("")
+                    description.setText("")
+                }
+                .setNegativeButton("Закрыть", null)
+                .create()
+                .apply {
+                    setOnShowListener {
+                        // Show the keyboard
+                        name.requestFocus()
+                        context.inputMethodManager
+                            .toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+                    }
+                    setOnDismissListener {
+                        // Hide the keyboard
+                        context.inputMethodManager
+                            .toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+                    }
+                }
+                .show()
         }
 
         calendarView.apply {
@@ -167,6 +186,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             // Show today's events initially.
             calendarView.post { selectDate(today) }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
     }
 
 

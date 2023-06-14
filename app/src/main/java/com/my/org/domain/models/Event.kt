@@ -10,6 +10,7 @@ import java.time.LocalDate
 data class Event(val text: String,
                  val description: String,
                  val time: String,
+                 val category: String,
                  val date: LocalDate){
     @PrimaryKey(autoGenerate = true) var id = 0
 }

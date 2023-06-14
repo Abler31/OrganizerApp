@@ -130,7 +130,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     //saveEvent(editText.text.toString())
                     // Prepare EditText for reuse.
 
-                    selectedDate?.let { Event(text = name.text.toString(), time = String.format(Locale.getDefault(), "%02d:%02d",hour, minute), description = description.text.toString(), date = it) }
+                    selectedDate?.let { Event(text = name.text.toString(), time = String.format(Locale.getDefault(), "%02d:%02d",hour, minute), description = description.text.toString(), category = spinner.selectedItem.toString(), date = it) }
                         ?.let { viewModel.insertEvent(it) }
                     name.setText("")
                     description.setText("")

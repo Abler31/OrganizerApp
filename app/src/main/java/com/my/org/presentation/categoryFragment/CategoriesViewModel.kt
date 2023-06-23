@@ -34,5 +34,4 @@ class CategoriesViewModel(
         deleteCategoryUseCase.execute(category)
     }
 
-
 }

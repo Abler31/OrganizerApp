@@ -41,7 +41,9 @@ class EventsViewModel(
         deleteEventUseCase.execute(event)
     }
 
-    fun getEventsByDate(date: LocalDate) = viewModelScope.launch(Dispatchers.IO) {
-        _eventsByDate.postValue(getEventsByDateUseCase.execute(date))
+    fun getEventsByDate(date: LocalDate): List<Event>{
+        return eventsLiveData.value?.filter {
+            it.date == date
+        } ?: emptyList()
     }
 }

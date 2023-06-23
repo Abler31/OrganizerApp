@@ -21,15 +21,18 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 class DetailedCategoryViewModel(
-    private val getEventsByCategoryUseCase: GetEventsByCategoryUseCase
+    private val getEventsByCategoryUseCase: GetEventsByCategoryUseCase,
+    private val getAllEventsUseCase: GetAllEventsUseCase
 ) : ViewModel() {
 
-    val _eventsByCategory = MutableLiveData<List<Event>>()
-    val eventsByCategory: LiveData<List<Event>>
-        get() = _eventsByCategory
+    val eventsLiveData: LiveData<List<Event>> = getAllEventsUseCase.execute()
+ /*   val eventsByCategory: LiveData<List<Event>>
+        get() = _eventsByCategory*/
 
 
-    fun getEventsByCategory(category: String) = viewModelScope.launch(Dispatchers.IO) {
-        _eventsByCategory.postValue(getEventsByCategoryUseCase.execute(category))
+    fun getEventsByCategory(category: String): List<Event> {
+        return eventsLiveData.value?.filter {
+            it.category == category
+        } ?: emptyList()
     }
 }

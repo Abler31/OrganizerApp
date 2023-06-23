@@ -50,16 +50,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private val viewModel: EventsViewModel by viewModels { EventsViewModelFactory(requireContext()) }
     private val categoriesViewModel: CategoriesViewModel by viewModels { CategoriesViewModelFactory(requireContext()) }
-
     lateinit var eventsRV: RecyclerView
     var categories: List<String> = emptyList()
-
     lateinit var spinnerArrayAdapter: ArrayAdapter<String>
-
-
-    private val inputDialog by lazy {
-
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -78,16 +71,14 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         eventsRV.layoutManager = LinearLayoutManager(requireContext())
         eventsRV.adapter = eventsAdapter
 
-        /*viewModel.eventsLiveData.observe(viewLifecycleOwner) {
-            eventsAdapter.updateList(it)
-        }*/
 
-        viewModel.eventsByDate.observe(viewLifecycleOwner){
-            //viewModel.getEventsByDate(selectedDate!!)
-            eventsAdapter.updateList(it)
+        viewModel.eventsLiveData.observe(viewLifecycleOwner){
+            eventsAdapter.updateList(it.filter {
+                it.date == selectedDate
+            })
         }
 
-        //создание категорий
+        //отображение категорий в спиннере
         spinnerArrayAdapter = ArrayAdapter<String>(requireContext(), androidx.transition.R.layout.support_simple_spinner_dropdown_item, categories)
         categoriesViewModel.categoriesLiveData.observe(viewLifecycleOwner){
             categories = it.map { category ->
@@ -103,11 +94,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             spinnerArrayAdapter = ArrayAdapter<String>(requireContext(), androidx.transition.R.layout.support_simple_spinner_dropdown_item, categories)
             spinner.adapter = spinnerArrayAdapter
 
-
             val timeButton = dialogView.findViewById<Button>(R.id.btn_dialog_timepicker)
             var hour = 0
             var minute = 0
-
 
             timeButton.setOnClickListener{
                 val onTimeSetListener = TimePickerDialog.OnTimeSetListener { timePicker, selectedHour, selectedMinute ->
@@ -122,16 +111,17 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 timePickerDialog.show()
             }
 
-
             AlertDialog.Builder(requireContext())
                 .setTitle("Создание задачи")
                 .setView(dialogView)
                 .setPositiveButton("Сохранить") { _, _ ->
-                    //saveEvent(editText.text.toString())
-                    // Prepare EditText for reuse.
-
-                    selectedDate?.let { Event(text = name.text.toString(), time = String.format(Locale.getDefault(), "%02d:%02d",hour, minute), description = description.text.toString(), category = spinner.selectedItem.toString(), date = it) }
+                    selectedDate?.let { Event(text = name.text.toString(),
+                        time = String.format(Locale.getDefault(), "%02d:%02d",hour, minute),
+                        description = description.text.toString(),
+                        category = spinner.selectedItem.toString(),
+                        date = it) }
                         ?.let { viewModel.insertEvent(it) }
+                    // Prepare EditText for reuse.
                     name.setText("")
                     description.setText("")
                 }
@@ -177,8 +167,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             val calDate = Date.from(it.yearMonth.atDay(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
             cal.setTime(calDate)
             monthText.text = months[cal.get(Calendar.MONTH)]
-
-
             selectDate(it.yearMonth.atDay(1))
         }
 
@@ -188,19 +176,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-    }
-
-
-
-    val titleRes: Int = R.string.home_title
-
     private var selectedDate: LocalDate? = null
     private val today = LocalDate.now()
 
-    private val titleSameYearFormatter = DateTimeFormatter.ofPattern("MMMM")
     private val headerFormatter = DateTimeFormatter.ofPattern("MMM d")
     private val selectionFormatter = DateTimeFormatter.ofPattern("d MMM yyyy")
     private val eventsMap = mutableMapOf<LocalDate, List<Event>>()
@@ -245,7 +223,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                         else -> {
                             textView.setTextColorRes(R.color.black)
                             textView.background = null
-                            dotView.isVisible = eventsMap[data.date].orEmpty().isNotEmpty()
+                            dotView.isVisible = viewModel.getEventsByDate(data.date).isNotEmpty()
                         }
                     }
                 } else {
@@ -280,7 +258,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             oldDate?.let { calendarView.notifyDateChanged(it) }
             calendarView.notifyDateChanged(date)
 
-            updateAdapterForDate()
+            updateAdapterForDate(date)
 
             val selectedText = requireView().findViewById<TextView>(R.id.tv_selectedDate)
             selectedText.text = selectionFormatter.format(date)
@@ -295,9 +273,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             yearHeader.text = date.year.toString()
         }
     }
-    private fun updateAdapterForDate() {
-        viewModel.getEventsByDate(selectedDate!!)
-        eventsAdapter.updateList(viewModel.eventsByDate.value.orEmpty())
+    private fun updateAdapterForDate(date: LocalDate) {
+        eventsAdapter.updateList(viewModel.getEventsByDate(date).orEmpty())
     }
     private val eventsAdapter = EventsAdapter {
         Log.d("test", "Надатие произошло")

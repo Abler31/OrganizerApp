@@ -16,9 +16,11 @@ import com.my.org.presentation.homeFragment.EventsViewModel
 class DetailedCategoryViewModelFactory(context: Context): ViewModelProvider.Factory {
     val repository by lazy { EventsRepositoryImpl(AppDatabase.getDatabase(context = context).getAppDao()) }
     val getEventsByCategoryUseCase by lazy { GetEventsByCategoryUseCase(repository) }
+    val getAllEventsUseCase by lazy { GetAllEventsUseCase(repository) }
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return DetailedCategoryViewModel(
-            getEventsByCategoryUseCase = getEventsByCategoryUseCase
+            getEventsByCategoryUseCase = getEventsByCategoryUseCase,
+            getAllEventsUseCase = getAllEventsUseCase
         ) as T
     }
 }

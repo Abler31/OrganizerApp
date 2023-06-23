@@ -46,8 +46,8 @@ class DetailedCategoryFragment : Fragment(R.layout.fragment_detailed_category) {
         categoryRV.adapter = categoriesAdapter
 
         if (args != null) {
-            viewModel.getEventsByCategory(args.categoryName)
-            viewModel.eventsByCategory.value?.let { categoriesAdapter.updateList(it) }
+            //viewModel.getEventsByCategory(args.categoryName)
+            categoriesAdapter.updateList(viewModel.getEventsByCategory(args.categoryName).orEmpty())
         }
 
     }

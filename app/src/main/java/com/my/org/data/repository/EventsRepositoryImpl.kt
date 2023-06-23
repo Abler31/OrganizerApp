@@ -31,5 +31,4 @@ class EventsRepositoryImpl(private val appDao: AppDao) : EventRepository {
         return appDao.getEventsByCategory(category)
     }
 
-
 }

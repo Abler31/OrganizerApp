@@ -50,6 +50,12 @@ class DetailedCategoryFragment : Fragment(R.layout.fragment_detailed_category) {
             categoriesAdapter.updateList(viewModel.getEventsByCategory(args.categoryName).orEmpty())
         }
 
+        viewModel.eventsLiveData.observe(viewLifecycleOwner){
+            if (args != null) {
+                categoriesAdapter.updateList(viewModel.getEventsByCategory(args.categoryName))
+            }
+        }
+
     }
 
 }

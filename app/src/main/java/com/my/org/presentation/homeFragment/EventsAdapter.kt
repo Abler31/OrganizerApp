@@ -54,4 +54,8 @@ class EventsAdapter(val onClick: (Event) -> Unit) :
         events.addAll(newList)
         notifyDataSetChanged()
     }
+
+    fun getEventAt(position: Int): Event{
+        return events[position]
+    }
 }

@@ -306,12 +306,48 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         eventsAdapter.updateList(viewModel.getEventsByDate(date).orEmpty())
     }
     private val eventsAdapter = EventsAdapter {
-        AlertDialog.Builder(requireContext())
-            .setMessage("Delete this event?")
-            .setPositiveButton("Delete") { _, _ ->
-                viewModel.deleteEvent(it)
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.add_and_edit_event_dialog, null)
+        val name = dialogView.findViewById<EditText>(R.id.et_dialog_name)
+        name.setText(it.text)
+        val description = dialogView.findViewById<TextView>(R.id.et_dialog_description)
+        description.setText(it.description)
+        val spinner = dialogView.findViewById<Spinner>(R.id.spinnerEvent)
+        spinnerArrayAdapter = ArrayAdapter<String>(requireContext(), androidx.transition.R.layout.support_simple_spinner_dropdown_item, categories)
+        spinner.adapter = spinnerArrayAdapter
+
+        val timeButton = dialogView.findViewById<Button>(R.id.btn_dialog_timepicker)
+        timeButton.setText(it.time)
+        var hour = 0
+        var minute = 0
+
+        timeButton.setOnClickListener{
+            val onTimeSetListener = TimePickerDialog.OnTimeSetListener { timePicker, selectedHour, selectedMinute ->
+                hour = selectedHour
+                minute = selectedMinute
+                timeButton.setText(String.format(Locale.getDefault(), "%02d:%02d",hour, minute))
             }
-            .setNegativeButton("Close", null)
+            val style = android.app.AlertDialog.THEME_HOLO_DARK
+
+            val timePickerDialog = TimePickerDialog(requireContext(), style, onTimeSetListener, hour, minute, true)
+            timePickerDialog.setTitle("Выберите время")
+            timePickerDialog.show()
+        }
+        AlertDialog.Builder(requireContext())
+            .setTitle("Создание задачи")
+            .setView(dialogView)
+            .setPositiveButton("Сохранить") { _, _ ->
+                selectedDate?.let { Event(text = name.text.toString(),
+                    time = String.format(Locale.getDefault(), "%02d:%02d",hour, minute),
+                    description = description.text.toString(),
+                    category = spinner.selectedItem.toString(),
+                    date = it) }
+                    ?.let { viewModel.updateEvent(it) }
+                // Prepare EditText for reuse.
+                name.setText("")
+                description.setText("")
+            }
+            .setNegativeButton("Закрыть", null)
+            .create()
             .show()
     }
 }

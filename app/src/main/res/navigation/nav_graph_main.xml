@@ -28,4 +28,8 @@
             android:name="categoryName"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/resFragment"
+        android:name="com.my.org.presentation.resFragment.ResFragment"
+        android:label="ResFragment" />
 </navigation>

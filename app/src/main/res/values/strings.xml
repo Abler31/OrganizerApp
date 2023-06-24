@@ -5,4 +5,13 @@
     <string name="splash_powered">Powered by Ilia Grigorev</string>
     <string name="splash_label">PocketOrg</string>
     <string name="home_title">Home</string>
+    <string name="dialog_res">БЭС</string>
+    <string name="dialog_month">Декабрь 2021</string>
+    <string name="pon_f04">Пониженное напряжение ф. 0,4</string>
+    <string name="pon">Пониженное напряжение ТП</string>
+    <string name="pov">Повышенное напряжение ТП</string>
+    <string name="asim_f04">Ф. 0,4 кВ с асимметрией напряжения</string>
+    <string name="prev_limit">Превышение лимита мощности</string>
+    <string name="red_zone">Красная зона</string>
+    <string name="control">На контроль</string>
 </resources>

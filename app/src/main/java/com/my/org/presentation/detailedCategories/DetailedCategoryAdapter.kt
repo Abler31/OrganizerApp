@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.my.org.R
 import com.my.org.domain.models.Event
 import com.my.org.presentation.homeFragment.EventsAdapter
+import java.time.format.DateTimeFormatter
 
 class DetailedCategoryAdapter(val onClick: (Event) -> Unit) :
     RecyclerView.Adapter<DetailedCategoryAdapter.EventsViewHolder>() {
@@ -19,7 +20,7 @@ class DetailedCategoryAdapter(val onClick: (Event) -> Unit) :
     ): EventsViewHolder {
         val itemView =
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.event_item_view, parent, false)
+                .inflate(R.layout.detailed_event_item_view, parent, false)
         return EventsViewHolder(
             itemView
         )
@@ -32,10 +33,11 @@ class DetailedCategoryAdapter(val onClick: (Event) -> Unit) :
     override fun getItemCount(): Int = events.size
     inner class EventsViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
-        val itemEventText = itemView.findViewById<TextView>(R.id.itemEventText)
-        val itemEventDescription = itemView.findViewById<TextView>(R.id.itemEventDescription)
-        val itemEventCategory = itemView.findViewById<TextView>(R.id.itemEventCategory)
-        val itemEventTime = itemView.findViewById<TextView>(R.id.itemEventTime)
+        val itemEventText = itemView.findViewById<TextView>(R.id.detailedItemEventText)
+        val itemEventDescription = itemView.findViewById<TextView>(R.id.detailedItemEventDescription)
+        val itemEventCategory = itemView.findViewById<TextView>(R.id.detailedItemEventCategory)
+        val itemEventTime = itemView.findViewById<TextView>(R.id.detailedItemEventTime)
+        val itemEventDate = itemView.findViewById<TextView>(R.id.detailedItemEventDate)
 
         init {
             itemView.setOnClickListener {
@@ -47,6 +49,7 @@ class DetailedCategoryAdapter(val onClick: (Event) -> Unit) :
             itemEventDescription.text = event.description
             itemEventCategory.text = event.category
             itemEventTime.text = event.time
+            itemEventDate.text = event.date.format(DateTimeFormatter.ofPattern("MMM d"))
         }
     }
 

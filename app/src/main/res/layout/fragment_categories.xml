@@ -10,7 +10,7 @@
         android:id="@+id/rv_categories"
         android:layout_width="409dp"
         android:layout_height="729dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="60dp"
         tools:listitem="@layout/category_item_view"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2"
@@ -25,10 +25,11 @@
         android:id="@+id/btn_addCategory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="25dp"
         android:clickable="true"
         android:src="@drawable/ic_add"
+        android:backgroundTint="@color/splash"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

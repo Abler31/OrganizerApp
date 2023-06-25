@@ -36,7 +36,7 @@ class CategoriesFragment : Fragment(R.layout.fragment_categories) {
         val name = view.findViewById<EditText>(R.id.et_category_name)
 
         AlertDialog.Builder(requireContext())
-            .setTitle("Создание задачи")
+            .setTitle("Создание категории")
             .setView(view)
             .setPositiveButton("Сохранить") { _, _ ->
                 viewModel.insertCategory(Category(name.text.toString()))

@@ -50,22 +50,14 @@ class DetailedCategoryFragment : Fragment(R.layout.fragment_detailed_category) {
         val bundle = arguments
         val addButton = view.findViewById<FloatingActionButton>(R.id.btn_detailed_add_task)
 
-        if(bundle == null){
-            Log.d("test", "null bundle")
-        }
-
         val args = bundle?.let { DetailedCategoryFragmentArgs.fromBundle(bundle)}
-        if (args != null) {
-            Log.d("test", args.categoryName)
-        }
 
         categoryRV = view.findViewById(R.id.rv_detailed_category)
         categoryRV.layoutManager = LinearLayoutManager(requireContext())
         categoryRV.adapter = categoriesAdapter
 
         if (args != null) {
-            //viewModel.getEventsByCategory(args.categoryName)
-            categoriesAdapter.updateList(viewModel.getEventsByCategory(args.categoryName).orEmpty())
+            categoriesAdapter.updateList(viewModel.getEventsByCategory(args.categoryName))
         }
 
         viewModel.eventsLiveData.observe(viewLifecycleOwner){
@@ -106,15 +98,7 @@ class DetailedCategoryFragment : Fragment(R.layout.fragment_detailed_category) {
                 .setTitle("Создание задачи")
                 .setView(dialogView)
                 .setPositiveButton("Сохранить") { _, _ ->
-                    /*selectedDate?.let { Event(text = name.text.toString(),
-                        time = String.format(Locale.getDefault(), "%02d:%02d",hour, minute),
-                        description = description.text.toString(),
-                        category = spinner.selectedItem.toString(),
-                        date = it) }
-                        ?.let { viewModel.insertEvent(it) }
-                    // Prepare EditText for reuse.
-                    name.setText("")
-                    description.setText("")*/
+
                 }
                 .setNegativeButton("Закрыть", null)
                 .create()

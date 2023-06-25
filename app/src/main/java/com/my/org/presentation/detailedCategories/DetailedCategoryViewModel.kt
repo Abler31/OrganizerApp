@@ -26,9 +26,6 @@ class DetailedCategoryViewModel(
 ) : ViewModel() {
 
     val eventsLiveData: LiveData<List<Event>> = getAllEventsUseCase.execute()
- /*   val eventsByCategory: LiveData<List<Event>>
-        get() = _eventsByCategory*/
-
 
     fun getEventsByCategory(category: String): List<Event> {
         return eventsLiveData.value?.filter {

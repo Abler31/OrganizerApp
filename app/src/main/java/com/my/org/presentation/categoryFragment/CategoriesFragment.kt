@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -22,16 +23,21 @@ import com.my.org.presentation.inputMethodManager
 import java.util.Locale
 
 class CategoriesFragment : Fragment(R.layout.fragment_categories) {
-    private val viewModel: CategoriesViewModel by viewModels { CategoriesViewModelFactory(requireContext()) }
+    private val viewModel: CategoriesViewModel by viewModels {
+        CategoriesViewModelFactory(
+            requireContext()
+        )
+    }
 
     lateinit var categoriesRV: RecyclerView
 
-    private val categoriesAdapter = CategoriesAdapter{
-        val direction = CategoriesFragmentDirections.actionCategoriesFragmentToDetailedCategoryFragment(it.name)
+    private val categoriesAdapter = CategoriesAdapter {
+        val direction =
+            CategoriesFragmentDirections.actionCategoriesFragmentToDetailedCategoryFragment(it.name)
         findNavController().navigate(direction)
     }
 
-    private val inputDialog by lazy{
+    private val inputDialog by lazy {
         val view = LayoutInflater.from(requireContext()).inflate(R.layout.add_category_dialog, null)
         val name = view.findViewById<EditText>(R.id.et_category_name)
 
@@ -73,10 +79,30 @@ class CategoriesFragment : Fragment(R.layout.fragment_categories) {
         categoriesRV.layoutManager = GridLayoutManager(requireContext(), 2)
         categoriesRV.adapter = categoriesAdapter
 
-        viewModel.categoriesLiveData.observe(viewLifecycleOwner){
+        viewModel.categoriesLiveData.observe(viewLifecycleOwner) {
             categoriesAdapter.updateList(it)
         }
 
+        categoriesAdapter.setOnLongItemClickListener(object :
+            CategoriesAdapter.OnLongItemClickListener {
+            override fun onLongItemClick(category: Category) {
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Удалить")
+                    .setMessage("Вы действительно хотите удалить категорию?")
+                    .setPositiveButton(
+                        "Да"
+                    ) { dialog, whichButton ->
+                        viewModel.deleteCategory(category)
+                        Toast.makeText(requireContext(), "Удалено", Toast.LENGTH_SHORT).show()
+                    }
+                    .setNegativeButton(
+                        "Нет"
+                    ) { dialog, whichButton ->
+                        categoriesAdapter.notifyDataSetChanged()
+                    }.show()
+            }
+        }
+        )
     }
 
 }

@@ -12,6 +12,8 @@ import com.my.org.domain.models.Event
 class CategoriesAdapter(val onClick: (Category) -> Unit) :
     RecyclerView.Adapter<CategoriesAdapter.CategoriesViewHolder>() {
 
+    lateinit var listener: OnLongItemClickListener
+
     val categories = mutableListOf<Category>()
 
     inner class CategoriesViewHolder(itemView: View) :
@@ -21,6 +23,13 @@ class CategoriesAdapter(val onClick: (Category) -> Unit) :
         init {
             itemView.setOnClickListener {
                 onClick(categories[bindingAdapterPosition])
+            }
+            itemView.setOnLongClickListener {
+                val position = bindingAdapterPosition
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener.onLongItemClick(categories[position])
+                }
+                return@setOnLongClickListener true
             }
         }
         fun bind(category: Category) {
@@ -49,5 +58,16 @@ class CategoriesAdapter(val onClick: (Category) -> Unit) :
         notifyDataSetChanged()
     }
 
+    interface OnLongItemClickListener {
+        fun onLongItemClick(category: Category)
+    }
+
+    fun setOnLongItemClickListener(listener: OnLongItemClickListener) {
+        this.listener = listener
+    }
+
+    fun getCategoryAt(position: Int): Category {
+        return categories[position]
+    }
 
 }

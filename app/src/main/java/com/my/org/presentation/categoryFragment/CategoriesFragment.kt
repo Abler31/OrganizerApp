@@ -20,14 +20,12 @@ import com.my.org.domain.models.Category
 import com.my.org.domain.models.Event
 import com.my.org.presentation.homeFragment.HomeFragment
 import com.my.org.presentation.inputMethodManager
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
 
+@AndroidEntryPoint
 class CategoriesFragment : Fragment(R.layout.fragment_categories) {
-    private val viewModel: CategoriesViewModel by viewModels {
-        CategoriesViewModelFactory(
-            requireContext()
-        )
-    }
+    private val viewModel: CategoriesViewModel by viewModels()
 
     lateinit var categoriesRV: RecyclerView
 

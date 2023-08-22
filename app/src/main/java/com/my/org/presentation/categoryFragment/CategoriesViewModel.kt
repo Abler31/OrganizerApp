@@ -10,10 +10,13 @@ import com.my.org.domain.usecase.categoryUseCases.GetAllCategoriesUseCase
 import com.my.org.domain.usecase.categoryUseCases.InsertCategoryUseCase
 import com.my.org.domain.usecase.categoryUseCases.UpdateCategoryUseCase
 import com.my.org.domain.usecase.eventUseCases.DeleteEventUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CategoriesViewModel(
+@HiltViewModel
+class CategoriesViewModel @Inject constructor(
     private val getAllCategoriesUseCase: GetAllCategoriesUseCase,
     private val insertCategoryUseCase: InsertCategoryUseCase,
     private val updateCategoryUseCase: UpdateCategoryUseCase,

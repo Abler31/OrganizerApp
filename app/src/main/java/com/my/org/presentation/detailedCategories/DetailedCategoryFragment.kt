@@ -2,7 +2,6 @@ package com.my.org.presentation.detailedCategories
 
 import android.app.TimePickerDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
@@ -14,27 +13,21 @@ import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.my.org.R
-import com.my.org.domain.models.Event
 
-import com.my.org.presentation.categoryFragment.CategoriesAdapter
-import com.my.org.presentation.categoryFragment.CategoriesFragmentDirections
 import com.my.org.presentation.categoryFragment.CategoriesViewModel
-import com.my.org.presentation.categoryFragment.CategoriesViewModelFactory
-import com.my.org.presentation.homeFragment.EventsViewModel
-import com.my.org.presentation.homeFragment.EventsViewModelFactory
 import com.my.org.presentation.inputMethodManager
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
 
+@AndroidEntryPoint
 class DetailedCategoryFragment : Fragment(R.layout.fragment_detailed_category) {
 
-    private val viewModel: DetailedCategoryViewModel by viewModels { DetailedCategoryViewModelFactory(requireContext()) }
-    private val categoriesViewModel: CategoriesViewModel by viewModels { CategoriesViewModelFactory(requireContext()) }
+    private val viewModel: DetailedCategoryViewModel by viewModels()
+    private val categoriesViewModel: CategoriesViewModel by viewModels()
     var categories: List<String> = emptyList()
 
     lateinit var categoryRV: RecyclerView

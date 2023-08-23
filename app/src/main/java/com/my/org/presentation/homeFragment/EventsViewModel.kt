@@ -10,11 +10,14 @@ import com.my.org.domain.usecase.eventUseCases.GetAllEventsUseCase
 import com.my.org.domain.usecase.eventUseCases.GetEventsByDateUseCase
 import com.my.org.domain.usecase.eventUseCases.InsertEventUseCase
 import com.my.org.domain.usecase.eventUseCases.UpdateEventUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import javax.inject.Inject
 
-class EventsViewModel(
+@HiltViewModel
+class EventsViewModel @Inject constructor(
     private val getAllEventsUseCase: GetAllEventsUseCase,
     private val insertEventUseCase: InsertEventUseCase,
     private val updateEventUseCase: UpdateEventUseCase,

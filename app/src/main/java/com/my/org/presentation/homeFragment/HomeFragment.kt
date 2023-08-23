@@ -32,11 +32,11 @@ import com.kizitonwose.calendar.view.ViewContainer
 import com.my.org.R
 import com.my.org.domain.models.Event
 import com.my.org.presentation.categoryFragment.CategoriesViewModel
-import com.my.org.presentation.categoryFragment.CategoriesViewModelFactory
 import com.my.org.presentation.inputMethodManager
 import com.my.org.presentation.makeInVisible
 import com.my.org.presentation.makeVisible
 import com.my.org.presentation.setTextColorRes
+import dagger.hilt.android.AndroidEntryPoint
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -47,11 +47,11 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-
+@AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
-    private val viewModel: EventsViewModel by viewModels { EventsViewModelFactory(requireContext()) }
-    private val categoriesViewModel: CategoriesViewModel by viewModels { CategoriesViewModelFactory(requireContext()) }
+    private val viewModel: EventsViewModel by viewModels()
+    private val categoriesViewModel: CategoriesViewModel by viewModels()
     lateinit var eventsRV: RecyclerView
     var categories: List<String> = emptyList()
     lateinit var spinnerArrayAdapter: ArrayAdapter<String>

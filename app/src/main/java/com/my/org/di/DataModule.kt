@@ -4,7 +4,9 @@ import android.content.Context
 import com.my.org.data.data_source.AppDao
 import com.my.org.data.data_source.AppDatabase
 import com.my.org.data.repository.CategoriesRepositoryImpl
+import com.my.org.data.repository.EventsRepositoryImpl
 import com.my.org.domain.repository.CategoriesRepository
+import com.my.org.domain.repository.EventRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,11 +18,18 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class DataModule {
 
-    @Provides
     @Singleton
-    fun provideCategoriesRepository(@ApplicationContext context: Context): CategoriesRepository{
-        return CategoriesRepositoryImpl(appDao = AppDatabase
-            .getDatabase(context = context).getAppDao())
+    @Provides
+    fun provideAppDAO(@ApplicationContext context: Context): AppDao{
+        return AppDatabase.getDatabase(context = context).getAppDao()
     }
+
+
+    @Provides
+    fun provideCategoriesRepository(appDao: AppDao): CategoriesRepository{
+        return CategoriesRepositoryImpl(appDao = appDao)
+    }
+
+
 
 }

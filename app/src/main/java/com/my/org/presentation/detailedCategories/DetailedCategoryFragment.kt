@@ -26,7 +26,7 @@ import java.util.Locale
 @AndroidEntryPoint
 class DetailedCategoryFragment : Fragment(R.layout.fragment_detailed_category) {
 
-    private val viewModel: DetailedCategoryViewModel by viewModels { DetailedCategoryViewModelFactory(requireContext()) }
+    private val viewModel: DetailedCategoryViewModel by viewModels()
     private val categoriesViewModel: CategoriesViewModel by viewModels()
     var categories: List<String> = emptyList()
 

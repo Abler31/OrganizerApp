@@ -50,7 +50,7 @@ import java.util.Locale
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
-    private val viewModel: EventsViewModel by viewModels { EventsViewModelFactory(requireContext()) }
+    private val viewModel: EventsViewModel by viewModels()
     private val categoriesViewModel: CategoriesViewModel by viewModels()
     lateinit var eventsRV: RecyclerView
     var categories: List<String> = emptyList()

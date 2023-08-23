@@ -30,6 +30,9 @@ class DataModule {
         return CategoriesRepositoryImpl(appDao = appDao)
     }
 
-
+    @Provides
+    fun provideEventsRepository(appDao: AppDao): EventRepository{
+        return EventsRepositoryImpl(appDao = appDao)
+    }
 
 }

@@ -38,7 +38,7 @@
                             android:id="@+id/tv_calendar_year_top"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="2023"
+                            tools:text="2023"
                             android:textColor="@color/grey"
                             android:textSize="17sp"
                             android:layout_marginStart="30dp"
@@ -53,7 +53,7 @@
                             android:layout_marginTop="8dp"
                             android:textSize="25sp"
                             android:textColor="@color/white"
-                            android:text="Птн,"
+                            tools:text="Птн,"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/tv_calendar_year_top" />
                         <TextView
@@ -64,7 +64,7 @@
                             android:layout_marginTop="8dp"
                             android:textSize="25sp"
                             android:textColor="@color/white"
-                            android:text="Апр 13"
+                            tools:text="Апр 13"
                             app:layout_constraintStart_toEndOf="@id/tv_calendar_day_of_week_top"
                             app:layout_constraintTop_toBottomOf="@id/tv_calendar_year_top" />
 

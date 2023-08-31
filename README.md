@@ -9,3 +9,4 @@
 - Retrofit
 - Coroutines
 - Navigation
+- Hilt
